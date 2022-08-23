@@ -67,66 +67,74 @@ enum Root_Count_Codes Quadratic_Equation(double a, double b, double c, double* x
 
 
 enum Root_Count_Codes Linear_Equation(double b, double c, double* x1) {
-
-    if (b == 0 && c == 0) {
-        return INF_ROOT_NUM;
+    if (b == 0) {
+        if (c == 0) {
+            return INF_ROOT_NUM;
+        }
+        else {
+            return NO_ROOTS;
+        }
     }
-    if (b == 0 && c != 0) {
-        return NO_ROOTS;
+    else {
+        if (c == 0) {
+            *x1 = 0;
+            return ONE_ROOT;
+        }
+        else {
+            *x1 = -c/b;
+            return ONE_ROOT;
+        }
     }
-    if (b != 0 && c == 0) {
-        *x1 = 0;
-        return ONE_ROOT;
-    }
-    if (b != 0 && c != 0) {
-        *x1 = -c/b;
-        return ONE_ROOT;
-    }
-    return ERROR;
 }
 
 
 enum Root_Count_Codes Quadratic_Equation_wo_Second_Coef(double a, double c, double* x1) {
 
-    if (a == 0 && c == 0) {
-        return INF_ROOT_NUM;
+    if (a == 0) {
+        if (c == 0) {
+            return INF_ROOT_NUM;
+        }
+        else {
+            return NO_ROOTS;
+        }
     }
-    if (a == 0 && c != 0) {
-        return NO_ROOTS;
+    else {
+        if (c == 0) {
+            *x1 = 0;
+            return ONE_ROOT;
+        }
+        if (a*c > 0) {
+            *x1 = sqrt(c/a);
+            return ONE_ROOT;
+        }
+        if (a*c < 0) {
+            return NO_ROOTS;
+        }
     }
-    if (a != 0 && c == 0) {
-        *x1 = 0;
-        return ONE_ROOT;
-    }
-    if (a*c > 0) {
-        *x1 = sqrt(c/a);
-        return ONE_ROOT;
-    }
-    if (a*c < 0) {
-        return NO_ROOTS;
-    }
-    return ERROR;
 }
 
 
 enum Root_Count_Codes Quadratic_Equation_wo_Third_Coef(double a, double b, double* x1, double* x2) {
-    if (a == 0 && b == 0) {
-        return INF_ROOT_NUM;
+    if (a == 0) {
+        if (b == 0) {
+            return INF_ROOT_NUM;
+        }
+        else {
+            return ONE_ROOT;
+        }
     }
-    if (a == 0 && b != 0) {
-        *x1 = 0;
-        return ONE_ROOT;
+    else {
+        if (b == 0) {
+            *x1 = 0;
+            return ONE_ROOT;
+        }
+        else {
+            *x1 = 0;
+            *x2 = -b/a;
+            return TWO_ROOTS;
+        }
+
     }
-    if (a != 0 && b == 0) {
-        *x1 = 0;
-        return ONE_ROOT;
-    }
-    if (a != 0 && b != 0) {
-        *x1 = 0;
-        *x2 = -b/a;
-        return TWO_ROOTS;
-    }
-    return ERROR;
 }
 
 
@@ -147,5 +155,4 @@ enum Root_Count_Codes True_Quadratic_Equation(double a, double b, double c, doub
         *x2 = (-b + sqrt_discr) /a /2;
         return TWO_ROOTS;
     }
-    return ERROR;
 }
