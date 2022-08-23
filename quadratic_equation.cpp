@@ -29,27 +29,29 @@ int main() {
     scanf("%lg %lg %lg", &a, &b, &c);
 
     root_count = Quadratic_Equation(a, b, c, &x1, &x2);
-    if (root_count == 0) {
+    switch(root_count)
+    {
+    case NO_ROOTS:
         printf("No roots\n");
-    }
-    if (root_count == 1) {
+        break;
+    case ONE_ROOT:
         printf("x = %lg\n", x1);
-    }
-    if (root_count == 2) {
+        break;
+    case TWO_ROOTS:
         printf("x1 = %lg; x2 = %lg\n", x1, x2);
-    }
-    if (root_count == INF_ROOT_NUM) {
+        break;
+    case INF_ROOT_NUM:
         printf("Infinite number of roots\n");
-    }
-    if (root_count == ERROR) {
-        printf("Error: incorrect input\n");
+        break;
+    default:
+        printf("Unknown error\n");
+        break;
     }
     return 0;
 }
 
 
 enum Root_Count_Codes Quadratic_Equation(double a, double b, double c, double* x1, double* x2) {
-
     if (a == 0) {
         return Linear_Equation(b, c, x1);
     }
@@ -85,11 +87,11 @@ enum Root_Count_Codes Linear_Equation(double b, double c, double* x1) {
             return ONE_ROOT;
         }
     }
+    return ERROR;
 }
 
 
 enum Root_Count_Codes Quadratic_Equation_wo_Second_Coef(double a, double c, double* x1) {
-
     if (a == 0) {
         if (c == 0) {
             return INF_ROOT_NUM;
@@ -111,6 +113,7 @@ enum Root_Count_Codes Quadratic_Equation_wo_Second_Coef(double a, double c, doub
             return NO_ROOTS;
         }
     }
+    return ERROR;
 }
 
 
@@ -133,13 +136,12 @@ enum Root_Count_Codes Quadratic_Equation_wo_Third_Coef(double a, double b, doubl
             *x2 = -b/a;
             return TWO_ROOTS;
         }
-
     }
+    return ERROR;
 }
 
 
 enum Root_Count_Codes True_Quadratic_Equation(double a, double b, double c, double* x1, double* x2) {
-
     double discriminant = b*b - 4*a*c;
     double sqrt_discr = sqrt(discriminant);
 
@@ -155,4 +157,5 @@ enum Root_Count_Codes True_Quadratic_Equation(double a, double b, double c, doub
         *x2 = (-b + sqrt_discr) /a /2;
         return TWO_ROOTS;
     }
+    return ERROR;
 }
