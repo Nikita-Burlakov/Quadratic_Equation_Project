@@ -2,12 +2,19 @@
 #include <math.h>
 
 enum Root_Count_Codes {
+    NO_ROOTS = 0,
+    ONE_ROOT = 1,
+    TWO_ROOTS = 2,
     INF_ROOT_NUM = 3,
     ERROR = 4
 };
 
-char Quadratic_Equation(double a, double b, double c, double* x1, double* x2);
-char True_Quadratic_Equation(double a, double b, double c, double* x1, double* x2);
+enum Root_Count_Codes Quadratic_Equation(double a, double b, double c, double* x1, double* x2);
+enum Root_Count_Codes Linear_Equation(double b, double c, double* x1);
+enum Root_Count_Codes Quadratic_Equation_wo_Second_Coef(double a, double c, double* x1);
+enum Root_Count_Codes Quadratic_Equation_wo_Third_Coef(double a, double b, double* x1, double* x2);
+enum Root_Count_Codes True_Quadratic_Equation(double a, double b, double c, double* x1, double* x2);
+
 
 int main() {
 
@@ -41,63 +48,104 @@ int main() {
 }
 
 
-char Quadratic_Equation(double a, double b, double c, double* x1, double* x2) {
+enum Root_Count_Codes Quadratic_Equation(double a, double b, double c, double* x1, double* x2) {
 
-    if (a == 0 && b == 0 && c == 0) {
-        return INF_ROOT_NUM;
+    if (a == 0) {
+        return Linear_Equation(b, c, x1);
     }
-    if (a == 0 && b == 0 && c != 0) {
-        return 0;
+    if (b == 0) {
+        return Quadratic_Equation_wo_Second_Coef(a, c, x1);
     }
-    if (a == 0 && b != 0 && c == 0) {
-        *x1 = 0;
-        return 1;
+    if (c == 0) {
+        return Quadratic_Equation_wo_Third_Coef(a, b, x1, x2);
     }
-    if (a == 0 && b != 0 && c != 0) {
-        *x1 = -c/b;
-        return 1;
-    }
-    //---------------------------------------------------------------
-    if (a != 0 && b == 0 && c == 0) {
-        *x1 = 0;
-        return 1;
-    }
-    if (a != 0 && b == 0 && c > 0) {
-        *x1 = sqrt(a);
-        return 1;
-    }
-    if (a != 0 && b == 0 && c < 0) {
-        return 0;
-    }
-    if (a != 0 && b != 0 && c == 0) {
-        *x1 = 0;
-        *x2 = -b/a;
-        return 2;
-    }
-    //---------------------------------------------------------------
     if (a != 0 && b != 0 && c != 0) {
         return True_Quadratic_Equation(a, b, c, x1, x2);
     }
-
     return ERROR;
 }
 
 
-char True_Quadratic_Equation(double a, double b, double c, double* x1, double* x2) {
+enum Root_Count_Codes Linear_Equation(double b, double c, double* x1) {
+
+    if (b == 0 && c == 0) {
+        return INF_ROOT_NUM;
+    }
+    if (b == 0 && c != 0) {
+        return NO_ROOTS;
+    }
+    if (b != 0 && c == 0) {
+        *x1 = 0;
+        return ONE_ROOT;
+    }
+    if (b != 0 && c != 0) {
+        *x1 = -c/b;
+        return ONE_ROOT;
+    }
+    return ERROR;
+}
+
+
+enum Root_Count_Codes Quadratic_Equation_wo_Second_Coef(double a, double c, double* x1) {
+
+    if (a == 0 && c == 0) {
+        return INF_ROOT_NUM;
+    }
+    if (a == 0 && c != 0) {
+        return NO_ROOTS;
+    }
+    if (a != 0 && c == 0) {
+        *x1 = 0;
+        return ONE_ROOT;
+    }
+    if (a*c > 0) {
+        *x1 = sqrt(c/a);
+        return ONE_ROOT;
+    }
+    if (a*c < 0) {
+        return NO_ROOTS;
+    }
+    return ERROR;
+}
+
+
+enum Root_Count_Codes Quadratic_Equation_wo_Third_Coef(double a, double b, double* x1, double* x2) {
+    if (a == 0 && b == 0) {
+        return INF_ROOT_NUM;
+    }
+    if (a == 0 && b != 0) {
+        *x1 = 0;
+        return ONE_ROOT;
+    }
+    if (a != 0 && b == 0) {
+        *x1 = 0;
+        return ONE_ROOT;
+    }
+    if (a != 0 && b != 0) {
+        *x1 = 0;
+        *x2 = -b/a;
+        return TWO_ROOTS;
+    }
+    return ERROR;
+}
+
+
+enum Root_Count_Codes True_Quadratic_Equation(double a, double b, double c, double* x1, double* x2) {
 
     double discriminant = b*b - 4*a*c;
+    double sqrt_discr = sqrt(discriminant);
 
     if (discriminant < 0) {
-        return 0;
+        return NO_ROOTS;
     }
     if (discriminant == 0) {
         *x1 = -b/a/2;
-        return 1;
+        return ONE_ROOT;
     }
     if (discriminant > 0) {
-        *x1 = (-b - sqrt(discriminant)) /a /2;
-        *x2 = (-b + sqrt(discriminant)) /a /2;
-        return 2;
+        *x1 = (-b - sqrt_discr) /a /2;
+        *x2 = (-b + sqrt_discr) /a /2;
+        return TWO_ROOTS;
     }
     return ERROR;
 }
