@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <math.h>
 
+
 enum Root_Count_Codes {
     NO_ROOTS =     0,
     ONE_ROOT =     1,
@@ -9,13 +10,16 @@ enum Root_Count_Codes {
     ERROR =        4
 };
 
+
 enum Root_Count_Codes Quadratic_Equation               (double a, double b, double c, double* x1, double* x2);
 enum Root_Count_Codes Linear_Equation                  (double b, double c, double* x1);
-enum Root_Count_Codes Quadratic_Equation_wo_Second_Coef(double a, double c, double* x1);
+enum Root_Count_Codes Quadratic_Equation_wo_Second_Coef(double a, double c, double* x1, double* x2);
 enum Root_Count_Codes Quadratic_Equation_wo_Third_Coef (double a, double b, double* x1, double* x2);
 enum Root_Count_Codes True_Quadratic_Equation          (double a, double b, double c, double* x1, double* x2);
-void get_double (double* inp);
-void get_coefs  (double* a, double* b, double* c);
+void Get_Double (double* inp);
+void Get_Coefs  (double* a, double* b, double* c);
+bool Eq_Doubles (double x, double y, double MIN_DIFF = 1e-10);
+bool Diff_Signs (double x, double y);
 
 
 int main() {
@@ -28,7 +32,7 @@ int main() {
     char root_count = 0;
 
     printf("РЕШАТЕЛЬ КВАДРАТНЫХ УРАВНЕНИЙ\n");
-    get_coefs(&a, &b, &c);
+    Get_Coefs(&a, &b, &c);
 
     root_count = Quadratic_Equation(a, b, c, &x1, &x2);
     switch(root_count)
@@ -54,16 +58,16 @@ int main() {
 
 
 enum Root_Count_Codes Quadratic_Equation(double a, double b, double c, double* x1, double* x2) {
-    if (a == 0) {
+    if (Eq_Doubles(a, 0)) {
         return Linear_Equation(b, c, x1);
     }
-    if (b == 0) {
-        return Quadratic_Equation_wo_Second_Coef(a, c, x1);
+    else if (Eq_Doubles(b, 0)) {
+        return Quadratic_Equation_wo_Second_Coef(a, c, x1, x2);
     }
-    if (c == 0) {
+    else if (Eq_Doubles(c, 0)) {
         return Quadratic_Equation_wo_Third_Coef(a, b, x1, x2);
     }
-    if (a != 0 && b != 0 && c != 0) {
+    else {
         return True_Quadratic_Equation(a, b, c, x1, x2);
     }
     return ERROR;
@@ -71,73 +75,72 @@ enum Root_Count_Codes Quadratic_Equation(double a, double b, double c, double* x
 
 
 enum Root_Count_Codes Linear_Equation(double b, double c, double* x1) {
-    if (b == 0) {
-        if (c == 0) {
-            return INF_ROOT_NUM;
-        }
-        else {
-            return NO_ROOTS;
-        }
+    bool b_is_null = Eq_Doubles(b, 0);
+    bool c_is_null = Eq_Doubles(c, 0);
+
+    if (b_is_null && c_is_null) {
+        return INF_ROOT_NUM;
+    }
+    else if (b_is_null) {
+        return NO_ROOTS;
+    }
+    else if (c_is_null) {
+        *x1 = 0;
+        return ONE_ROOT;
     }
     else {
-        if (c == 0) {
-            *x1 = 0;
-            return ONE_ROOT;
-        }
-        else {
-            *x1 = -c/b;
-            return ONE_ROOT;
-        }
+        *x1 = -c/b;
+        return ONE_ROOT;
     }
     return ERROR;
 }
 
 
-enum Root_Count_Codes Quadratic_Equation_wo_Second_Coef(double a, double c, double* x1) {
-    if (a == 0) {
-        if (c == 0) {
-            return INF_ROOT_NUM;
-        }
-        else {
-            return NO_ROOTS;
-        }
+enum Root_Count_Codes Quadratic_Equation_wo_Second_Coef(double a, double c, double* x1, double* x2) {
+    bool a_is_null = Eq_Doubles(a, 0);
+    bool c_is_null = Eq_Doubles(c, 0);
+
+    if (a_is_null && c_is_null) {
+        return INF_ROOT_NUM;
+    }
+    else if (a_is_null) {
+        return NO_ROOTS;
+    }
+    else if (c_is_null) {
+        *x1 = 0;
+        return ONE_ROOT;
+    }
+    else if (Diff_Signs (a,c)) {
+        *x1 = sqrt(-c/a);
+        *x2 = -*x1;
+        return TWO_ROOTS;
     }
     else {
-        if (c == 0) {
-            *x1 = 0;
-            return ONE_ROOT;
-        }
-        if (a*c > 0) {
-            *x1 = sqrt(c/a);
-            return ONE_ROOT;
-        }
-        if (a*c < 0) {
-            return NO_ROOTS;
-        }
+        return NO_ROOTS;
     }
     return ERROR;
 }
 
 
 enum Root_Count_Codes Quadratic_Equation_wo_Third_Coef(double a, double b, double* x1, double* x2) {
-    if (a == 0) {
-        if (b == 0) {
-            return INF_ROOT_NUM;
-        }
-        else {
-            return ONE_ROOT;
-        }
+    bool a_is_null = Eq_Doubles(a, 0);
+    bool b_is_null = Eq_Doubles(b, 0);
+
+    if (a_is_null && b_is_null) {
+        return INF_ROOT_NUM;
+    }
+    else if (a_is_null) {
+        *x1 = 0;
+        return ONE_ROOT;
+    }
+    else if (b_is_null) {
+        *x1 = 0;
+        return ONE_ROOT;
     }
     else {
-        if (b == 0) {
-            *x1 = 0;
-            return ONE_ROOT;
-        }
-        else {
-            *x1 = 0;
-            *x2 = -b/a;
-            return TWO_ROOTS;
-        }
+        *x1 = 0;
+        *x2 = -b/a;
+        return TWO_ROOTS;
     }
     return ERROR;
 }
@@ -145,25 +148,26 @@ enum Root_Count_Codes Quadratic_Equation_wo_Third_Coef(double a, double b, doubl
 
 enum Root_Count_Codes True_Quadratic_Equation(double a, double b, double c, double* x1, double* x2) {
     double discriminant = b*b - 4*a*c;
-    double sqrt_discr = sqrt(discriminant);
+    double sqrt_discr = 0;
 
     if (discriminant < 0) {
         return NO_ROOTS;
     }
-    if (discriminant == 0) {
-        *x1 = -b/a/2;
-        return ONE_ROOT;
-    }
-    if (discriminant > 0) {
+    else if (discriminant > 0) {
+        sqrt_discr = sqrt(discriminant);
         *x1 = (-b - sqrt_discr) /a /2;
         *x2 = (-b + sqrt_discr) /a /2;
         return TWO_ROOTS;
+    }
+    else {
+        *x1 = -b/a/2;
+        return ONE_ROOT;
     }
     return ERROR;
 }
 
 
-void get_double(double* inp) {
+void Get_Double(double* inp) {
     while (scanf("%lg", inp) != 1) {
         while (getchar() != '\n');
         printf("Недопустимый ввод. Введите число\n");
@@ -171,11 +175,28 @@ void get_double(double* inp) {
 }
 
 
-void get_coefs(double* a, double* b, double* c) {
+void Get_Coefs(double* a, double* b, double* c) {
     printf("Введите первый коэффициент\n");
-    get_double(a);
+    Get_Double(a);
     printf("Введите второй коэффициент\n");
-    get_double(b);
+    Get_Double(b);
     printf("Введите третий коэффициент\n");
-    get_double(c);
+    Get_Double(c);
+}
+
+
+bool Eq_Doubles(double x, double y, double MIN_DIFF) {
+    double diff;
+    diff = (x > y) ? (x - y) : (y - x);
+    if (diff < MIN_DIFF) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+
+bool Diff_Signs(double x, double y) {
+    return ((x>0)&&(y<0)) || ((x<0)&&(y>0));
 }
