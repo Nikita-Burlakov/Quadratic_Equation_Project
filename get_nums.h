@@ -1,0 +1,2 @@
+void Get_Double (double* inp);
+void Get_Coefs  (double* a, double* b, double* c);

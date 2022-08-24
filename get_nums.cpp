@@ -1,0 +1,18 @@
+void Get_Double(double* inp) {
+    while (scanf("%lg", inp) != 1) {
+        while (getchar() != '\n')
+            ;
+        printf("Недопустимый ввод. Введите число\n");
+    }
+}
+
+
+void Get_Coefs(double* a, double* b, double* c) {
+    printf("РЕШАТЕЛЬ КВАДРАТНЫХ УРАВНЕНИЙ\n");
+    printf("Введите первый коэффициент\n");
+    Get_Double(a);
+    printf("Введите второй коэффициент\n");
+    Get_Double(b);
+    printf("Введите третий коэффициент\n");
+    Get_Double(c);
+}
