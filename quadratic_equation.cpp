@@ -2,37 +2,39 @@
 #include <math.h>
 
 enum Root_Count_Codes {
-    NO_ROOTS = 0,
-    ONE_ROOT = 1,
-    TWO_ROOTS = 2,
+    NO_ROOTS =     0,
+    ONE_ROOT =     1,
+    TWO_ROOTS =    2,
     INF_ROOT_NUM = 3,
-    ERROR = 4
+    ERROR =        4
 };
 
-enum Root_Count_Codes Quadratic_Equation(double a, double b, double c, double* x1, double* x2);
-enum Root_Count_Codes Linear_Equation(double b, double c, double* x1);
+enum Root_Count_Codes Quadratic_Equation               (double a, double b, double c, double* x1, double* x2);
+enum Root_Count_Codes Linear_Equation                  (double b, double c, double* x1);
 enum Root_Count_Codes Quadratic_Equation_wo_Second_Coef(double a, double c, double* x1);
-enum Root_Count_Codes Quadratic_Equation_wo_Third_Coef(double a, double b, double* x1, double* x2);
-enum Root_Count_Codes True_Quadratic_Equation(double a, double b, double c, double* x1, double* x2);
+enum Root_Count_Codes Quadratic_Equation_wo_Third_Coef (double a, double b, double* x1, double* x2);
+enum Root_Count_Codes True_Quadratic_Equation          (double a, double b, double c, double* x1, double* x2);
+void get_double (double* inp);
+void get_coefs  (double* a, double* b, double* c);
 
 
 int main() {
 
-    double a = 0;
-    double b = 0;
-    double c = 0;
+    double a  = 0;
+    double b  = 0;
+    double c  = 0;
     double x1 = 1111;
     double x2 = 1111;
     char root_count = 0;
 
-    printf("Enter 3 coefficients of the quadratic equation\n");
-    scanf("%lg %lg %lg", &a, &b, &c);
+    printf("РЕШАТЕЛЬ КВАДРАТНЫХ УРАВНЕНИЙ\n");
+    get_coefs(&a, &b, &c);
 
     root_count = Quadratic_Equation(a, b, c, &x1, &x2);
     switch(root_count)
     {
     case NO_ROOTS:
-        printf("No roots\n");
+        printf("Нет корней\n");
         break;
     case ONE_ROOT:
         printf("x = %lg\n", x1);
@@ -41,10 +43,10 @@ int main() {
         printf("x1 = %lg; x2 = %lg\n", x1, x2);
         break;
     case INF_ROOT_NUM:
-        printf("Infinite number of roots\n");
+        printf("Бесконечно много корней\n");
         break;
     default:
-        printf("Unknown error\n");
+        printf("Неизвестная ошибка\n");
         break;
     }
     return 0;
@@ -158,4 +160,22 @@ enum Root_Count_Codes True_Quadratic_Equation(double a, double b, double c, doub
         return TWO_ROOTS;
     }
     return ERROR;
+}
+
+
+void get_double(double* inp) {
+    while (scanf("%lg", inp) != 1) {
+        while (getchar() != '\n');
+        printf("Недопустимый ввод. Введите число\n");
+    }
+}
+
+
+void get_coefs(double* a, double* b, double* c) {
+    printf("Введите первый коэффициент\n");
+    get_double(a);
+    printf("Введите второй коэффициент\n");
+    get_double(b);
+    printf("Введите третий коэффициент\n");
+    get_double(c);
 }
