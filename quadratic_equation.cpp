@@ -1,13 +1,14 @@
 #include <stdio.h>
 #include <math.h>
+#include <TXLib.h>
 
 
 enum Root_Count_Codes {
-    NO_ROOTS =     0,
-    ONE_ROOT =     1,
-    TWO_ROOTS =    2,
-    INF_ROOT_NUM = 3,
-    ERROR =        4
+    NO_ROOTS =      0,
+    ONE_ROOT =      1,
+    TWO_ROOTS =     2,
+    INF_ROOT_NUM =  3,
+    UNKNOWN_ERROR = 4
 };
 
 
@@ -53,6 +54,9 @@ int main() {
         printf("Неизвестная ошибка\n");
         break;
     }
+
+    getchar();
+
     return 0;
 }
 
@@ -70,7 +74,7 @@ enum Root_Count_Codes Quadratic_Equation(double a, double b, double c, double* x
     else {
         return True_Quadratic_Equation(a, b, c, x1, x2);
     }
-    return ERROR;
+    return UNKNOWN_ERROR;
 }
 
 
@@ -92,7 +96,7 @@ enum Root_Count_Codes Linear_Equation(double b, double c, double* x1) {
         *x1 = -c/b;
         return ONE_ROOT;
     }
-    return ERROR;
+    return UNKNOWN_ERROR;
 }
 
 
@@ -118,7 +122,7 @@ enum Root_Count_Codes Quadratic_Equation_wo_Second_Coef(double a, double c, doub
     else {
         return NO_ROOTS;
     }
-    return ERROR;
+    return UNKNOWN_ERROR;
 }
 
 
@@ -142,7 +146,7 @@ enum Root_Count_Codes Quadratic_Equation_wo_Third_Coef(double a, double b, doubl
         *x2 = -b/a;
         return TWO_ROOTS;
     }
-    return ERROR;
+    return UNKNOWN_ERROR;
 }
 
 
@@ -157,19 +161,23 @@ enum Root_Count_Codes True_Quadratic_Equation(double a, double b, double c, doub
         sqrt_discr = sqrt(discriminant);
         *x1 = (-b - sqrt_discr) /a /2;
         *x2 = (-b + sqrt_discr) /a /2;
+
         return TWO_ROOTS;
     }
     else {
         *x1 = -b/a/2;
+
         return ONE_ROOT;
     }
-    return ERROR;
+
+    return UNKNOWN_ERROR;
 }
 
 
 void Get_Double(double* inp) {
     while (scanf("%lg", inp) != 1) {
-        while (getchar() != '\n');
+        while (getchar() != '\n')   ;
+
         printf("Недопустимый ввод. Введите число\n");
     }
 }
