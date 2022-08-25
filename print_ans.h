@@ -1,1 +1,1 @@
-void Print_Ans  (char root_count, double x1, double x2);
+void Print_Ans  (int root_count, double x1, double x2);

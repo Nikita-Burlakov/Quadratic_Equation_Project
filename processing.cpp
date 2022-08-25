@@ -1,3 +1,8 @@
+#include <math.h>
+
+#include "processing.h"
+
+
 enum Root_Count_Codes Quadratic_Equation(double a, double b, double c, double* x1, double* x2) {
     if (Eq_Doubles(a, 0)) {
         return Linear_Equation(b, c, x1);
