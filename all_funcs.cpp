@@ -1,5 +1,6 @@
 #include <math.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "all_funcs.h"
 
@@ -7,16 +8,18 @@
 //-------------------------------------------------------------------------
 
 
-void Get_Double(double* inp) {
+void Get_Double (double* inp, bool help_msg) {
     while (scanf("%lg", inp) != 1) {
         while (getchar() != '\n')
             ;
-        printf("ÕÂ‰ÓÔÛÒÚËÏ˚È ‚‚Ó‰. ¬‚Â‰ËÚÂ ˜ËÒÎÓ\n");
+        if (help_msg) {
+            printf("ÕÂ‰ÓÔÛÒÚËÏ˚È ‚‚Ó‰. ¬‚Â‰ËÚÂ ˜ËÒÎÓ\n");
+        }
     }
 }
 
 
-void Get_Coefs(double* a, double* b, double* c) {
+void Get_Coefs (double* a, double* b, double* c) {
     printf("–≈ÿ¿“≈À‹  ¬¿ƒ–¿“Õ€’ ”–¿¬Õ≈Õ»…\n");
     printf("¬‚Â‰ËÚÂ ÔÂ‚˚È ÍÓ˝ÙÙËˆËÂÌÚ\n");
     Get_Double(a);
@@ -30,7 +33,7 @@ void Get_Coefs(double* a, double* b, double* c) {
 //-------------------------------------------------------------------------
 
 
-int Quadratic_Equation(double a, double b, double c, double* x1, double* x2) {
+int Quadratic_Equation (double a, double b, double c, double* x1, double* x2) {
     if (Eq_Doubles(a, 0)) {
         return Linear_Equation(b, c, x1);
     }
@@ -48,7 +51,7 @@ int Quadratic_Equation(double a, double b, double c, double* x1, double* x2) {
 }
 
 
-int Linear_Equation(double b, double c, double* x1) {
+int Linear_Equation (double b, double c, double* x1) {
     bool b_is_null = Eq_Doubles(b, 0);
     bool c_is_null = Eq_Doubles(c, 0);
 
@@ -71,7 +74,7 @@ int Linear_Equation(double b, double c, double* x1) {
 }
 
 
-int Quadratic_Equation_wo_Second_Coef(double a, double c, double* x1, double* x2) {
+int Quadratic_Equation_wo_Second_Coef (double a, double c, double* x1, double* x2) {
     bool a_is_null = Eq_Doubles(a, 0);
     bool c_is_null = Eq_Doubles(c, 0);
 
@@ -98,7 +101,7 @@ int Quadratic_Equation_wo_Second_Coef(double a, double c, double* x1, double* x2
 }
 
 
-int Quadratic_Equation_wo_Third_Coef(double a, double b, double* x1, double* x2) {
+int Quadratic_Equation_wo_Third_Coef (double a, double b, double* x1, double* x2) {
     bool a_is_null = Eq_Doubles(a, 0);
     bool b_is_null = Eq_Doubles(b, 0);
 
@@ -123,7 +126,7 @@ int Quadratic_Equation_wo_Third_Coef(double a, double b, double* x1, double* x2)
 }
 
 
-int True_Quadratic_Equation(double a, double b, double c, double* x1, double* x2) {
+int True_Quadratic_Equation (double a, double b, double c, double* x1, double* x2) {
     double discriminant = b*b - 4*a*c;
     double sqrt_discr = 0;
 
@@ -145,7 +148,10 @@ int True_Quadratic_Equation(double a, double b, double c, double* x1, double* x2
 }
 
 
-bool Eq_Doubles(double x, double y, double MIN_DIFF) {
+//-------------------------------------------------------------------------
+
+
+bool Eq_Doubles (double x, double y, double MIN_DIFF) {
     double diff;
     diff = (x > y) ? (x - y) : (y - x);
     if (diff < MIN_DIFF) {
@@ -157,7 +163,7 @@ bool Eq_Doubles(double x, double y, double MIN_DIFF) {
 }
 
 
-bool Diff_Signs(double x, double y) {
+bool Diff_Signs (double x, double y) {
     return ((x>0)&&(y<0)) || ((x<0)&&(y>0));
 }
 
@@ -186,4 +192,75 @@ void Print_Ans (int root_count, double x1, double x2) {
     }
 
     getchar();
+}
+
+
+//-------------------------------------------------------------------------
+
+
+void Unit_Test () {
+    double a                = 2222;
+    double b                = 2222;
+    double c                = 2222;
+    int root_count          = 2222;
+    double x1               = 2222;
+    double x2               = 2222;
+
+    unsigned long err_count = 0;
+
+    while (Read_Test(&a, &b, &c, &root_count, &x1, &x2)) {
+        err_count += Processing_Test(a, b, c, root_count, x1, x2);
+    }
+
+    printf("“≈—“»–Œ¬¿Õ»≈ «¿¬≈–ÿ≈ÕŒ");
+    printf(" ŒÀ»◊≈—“¬Œ Œÿ»¡Œ :  %lu", err_count);
+
+    exit(0);
+}
+
+
+bool Read_Test (double* a, double* b, double* c, int* root_count, double* x1, double* x2) {
+    FILE* file_pointer = fopen("tests.txt", "r");
+
+    Get_File_Double (a,          file_pointer);
+    Get_File_Double (b,          file_pointer);
+    Get_File_Double (c,          file_pointer);
+    Get_File_Int    (root_count, file_pointer);
+
+    if (root_count == 1) {
+        Get_File_Double (x1, file_pointer);
+    }
+    else if (root_count == 2) {
+        Get_File_Double (x1, file_pointer);
+        Get_File_Double (x2, file_pointer);
+    }
+
+    fclose(file_pointer);
+}
+
+
+void Get_File_Int    (int*    inp, FILE* file_pointer) {
+    while (fscanf(file_pointer, "%d",  inp) != 1) {
+        getc(file_pointer);
+    }
+}
+
+
+void Get_File_Double (double* inp, FILE* file_pointer) {
+    while (fscanf(file_pointer, "%lg", inp) != 1) {
+        getc(file_pointer);
+    }
+}
+
+
+int Processing_Test (double a, double b, double c, int root_count, double x1, double x2) {
+    int    true_root_count = 2222;
+    double true_x1         = 2222;
+    double true_x2         = 2222;
+
+    true_root_count = Quadratic_Equation(a, b, c, &true_x1, &true_x2);
+    if ((root_count == true_root_count) && (x1 == true_x1) && (x2 == true_x2)) {
+        return 0;
+    }
+    return 1;
 }

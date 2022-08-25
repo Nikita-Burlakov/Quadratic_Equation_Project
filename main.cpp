@@ -5,7 +5,11 @@
 #include "all_funcs.h"
 
 
-int main() {
+int main(bool run_unit_test = false) {
+
+    if (run_unit_test) {
+        Unit_Test();
+    }
 
     double a  = 0;
     double b  = 0;
